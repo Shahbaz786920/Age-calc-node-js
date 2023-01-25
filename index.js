@@ -1,23 +1,24 @@
 const http = require('http');
-const data = require('./data.json')
+const url = require('url')
+const data = require('./data')
 const server = http.createServer((req, res) => {
     const parsedURL=url.parse(req.url,true).query
 
-    if (parsedURL.pathname==='/age/:year/:month/:date/:name'&&req.method==='GET') {
-        var searchYear = req.query.year
-        var searchMonth = req.query.month
-        var searchDate = req.query.date
-        var searchName = req.query.name
-        var user = data.find((item) => item.year === searchYear,
+    if (parsedURL.pathname==='/age'&&req.method==='GET') {
+        const searchYear = parsedURL.query.year
+        const searchMonth = parsedURL.query.month
+        const searchDate = parsedURL.query.date
+        const searchName = parsedURL.query.name
+        const user = data.find((item) => item.year === searchYear,
             data.find((item) => item.month === searchMonth,
                 data.find((item) => item.date === searchDate,
                     data.find((item) => item.name === searchName))))
         res.writeHead(200)
-        res.end(JSON.parse(user))
+        res.end(JSON.stringify(user))
     }
     else{
         res.writeHead(404)
-        res.end(JSON.parse('some error occur'))
+        res.end(JSON.stringify('some error occur'))
     }
 })
 
